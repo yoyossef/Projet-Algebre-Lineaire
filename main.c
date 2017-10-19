@@ -14,3 +14,7 @@ Matrix newMatrix(int nb_rows, int nb_columns){
     m.nb_columns = nb_columns;
     return m;
 }
+
+E getElt(Matrix m, int row, int column){
+    return m.mat[row*(m.nb_columns - 1) + m.nb_columns - 1 - m.nb_rows];
+}
