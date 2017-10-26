@@ -79,7 +79,17 @@ Matrix transpose(Matrix m){
     return t;
 }
 
-
+Matrix addition(Matrix a, Matrix b){
+    if(a.nb_columns != b.nb_columns || a.nb_rows != b.nb_rows)
+        fprintf(stderr, "Erreur addition, les deux n'ont matrices n'ont pas la même dimension\n");
+    Matrix add = newMatrix(a.nb_rows, a.nb_columns);
+    for(int i = 1; i <= add.nb_rows; i++){
+        for(int j = 1; j <= add.nb_columns; j++){
+            setElt(add, i, j, (getElt(a, i, j) + getElt(b, i, j)));
+        }
+    }
+    return add;
+}
 
 int main(){
     Matrix m = newMatrix(2,2);
@@ -88,10 +98,14 @@ int main(){
     setElt(m, 2, 1, 3);
     setElt(m, 2, 2, 4);
     printMatrix(m);
-    printf("\n");
+    printf("Transposée : \n");
     Matrix t = transpose(m);
     printMatrix(t);
+    printf("Addition : \n");
+    Matrix add = addition(m, t);
+    printMatrix(add);
     deleteMatrix(m);
     deleteMatrix(t);
+    deleteMatrix(add);
     return 0;
 }
