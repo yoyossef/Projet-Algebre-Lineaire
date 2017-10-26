@@ -91,6 +91,26 @@ Matrix addition(Matrix a, Matrix b){
     return add;
 }
 
+Matrix multiplication (Matrix a, Matrix b){
+    Matrix mult = newMatrix(a.nb_rows, b.nb_columns);
+    if(a.nb_columns != b.nb_rows){
+        free(mult.mat);
+        mult.mat = NULL;
+        return mult;
+    }
+    E sum = 0.0;
+    for(int i = 1; i <= mult.nb_rows; i++){
+        for(int j = 1; j <= mult.nb_columns; j++){
+            for (int k = 1; k <= a.nb_columns; k++){
+                sum += getElt(a, i, k)*getElt(b, k, j);
+            }
+            setElt(mult, i, j, sum);
+            sum = 0;            
+        }
+    }
+    return mult;
+}
+
 int main(){
     Matrix m = newMatrix(2,2);
     setElt(m, 1, 1, 1);
@@ -104,8 +124,12 @@ int main(){
     printf("Addition : \n");
     Matrix add = addition(m, t);
     printMatrix(add);
+    Matrix mult = multiplication(m, t);
+    printf("Multiplication : \n");
+    printMatrix(mult);
     deleteMatrix(m);
     deleteMatrix(t);
     deleteMatrix(add);
+    deleteMatrix(mult);
     return 0;
 }
