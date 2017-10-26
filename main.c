@@ -47,8 +47,8 @@ int isSquare(Matrix m){
 int isSymetric(Matrix m){ //0 si faux
     int retour = 1;
     if(isSquare(m)){
-        for(int i = 0; i < (m.nb_columns * m.nb_rows); i++){
-            for(int j = 0; j < (m.nb_columns * m.nb_rows); j++){
+        for(int i = 1; i <= (m.nb_rows); i++){
+            for(int j = 1; j <= (m.nb_columns); j++){
                 if(getElt(m,i,j) != getElt(m,j,i) && i!=j){
                     retour = 0;
             }
@@ -69,11 +69,29 @@ void printMatrix(Matrix m){
     }
 }
 
+Matrix transpose(Matrix m){
+    Matrix t = newMatrix(m.nb_columns, m.nb_rows);
+    for(int i = 1; i <= t.nb_rows; i++){
+        for(int j = 1 ; j <= t.nb_columns; j++){
+            setElt(t, i, j, getElt(m, j, i));
+        }
+    }
+    return t;
+}
+
+
+
 int main(){
     Matrix m = newMatrix(2,2);
-    setElt(m, 1, 1, 2.5);
-    // setElt(m, 2, 2, 3.5);
+    setElt(m, 1, 1, 1);
+    setElt(m, 1, 2, 2);    
+    setElt(m, 2, 1, 3);
+    setElt(m, 2, 2, 4);
     printMatrix(m);
+    printf("\n");
+    Matrix t = transpose(m);
+    printMatrix(t);
     deleteMatrix(m);
+    deleteMatrix(t);
     return 0;
 }
