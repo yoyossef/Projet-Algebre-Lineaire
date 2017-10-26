@@ -111,6 +111,16 @@ Matrix multiplication (Matrix a, Matrix b){
     return mult;
 }
 
+Matrix mult_scalar(E sc, Matrix m){
+    Matrix mult = newMatrix(m.nb_rows, m.nb_columns);
+    for(int i = 1; i <= m.nb_rows; i++){
+        for(int j = 1; j <= m.nb_columns; j++){
+            setElt(mult, i, j, sc*getElt(m, i, j));
+        }
+    }
+    return mult;
+}
+
 int main(){
     Matrix m = newMatrix(2,2);
     setElt(m, 1, 1, 1);
@@ -127,6 +137,10 @@ int main(){
     Matrix mult = multiplication(m, t);
     printf("Multiplication : \n");
     printMatrix(mult);
+    Matrix multsc = mult_scalar(2.0, mult);
+    printf("Multiplication par deux : \n");    
+    printMatrix(multsc);
+    deleteMatrix(multsc);
     deleteMatrix(m);
     deleteMatrix(t);
     deleteMatrix(add);
