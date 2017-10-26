@@ -21,19 +21,19 @@ Matrix newMatrix(int nb_rows, int nb_columns){
 E getElt(Matrix m, int row, int column){
     //Le tableau étant d'une dimension, voici une manière (pas très intuitive) de récupérer
     //l'élément d'une cellule d'une matrice donné.
-    if(column > m.nb_columns || row > m.nb_rows){
-        fprintf(stderr, "Erreur, vous dépassez la dimension de la matrice\n");
+    if(column > m.nb_columns || row > m.nb_rows || column < 1 || row < 1){
+        fprintf(stderr, "Erreur getElt, vous dépassez la dimension de la matrice\n");
         exit(1);
     }
-    return m.mat[row*(m.nb_columns - 1) + column - 1 - row];
+    return m.mat[(row-1)*m.nb_columns + column - 1];
 }
 
 void setElt(Matrix m, int row, int column, E val){
     if(column > m.nb_columns || row > m.nb_rows){
-        fprintf(stderr, "Erreur, vous dépassez la dimension de la matrice\n");
+        fprintf(stderr, "Erreur setElt, vous dépassez la dimension de la matrice\n");
         exit(1);
     }
-    m.mat[row*(m.nb_columns - 1) + column - 1 - row] = val;
+    m.mat[(row-1)*m.nb_columns + column - 1] = val;
 }
 
 void deleteMatrix(Matrix m){
@@ -62,15 +62,17 @@ int isSymetric(Matrix m){ //0 si faux
 void printMatrix(Matrix m){
     for(int i = 1; i <= m.nb_rows; i++){
         for(int j = 1; j <= m.nb_columns; j++){
-            printf("%f\t", getElt(m, i, j));
+            E elt = getElt(m, i, j);
+            printf("%f\t", elt);
         }
         printf("\n");
     }
 }
 
 int main(){
-    Matrix m = newMatrix(5,5);
-    setElt(m, 1, 3, 2.5);
+    Matrix m = newMatrix(2,2);
+    setElt(m, 1, 1, 2.5);
+    // setElt(m, 2, 2, 3.5);
     printMatrix(m);
     deleteMatrix(m);
     return 0;
