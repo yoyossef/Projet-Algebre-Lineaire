@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <perror.h>
 
 typedef float E;
 typedef struct matrix {
@@ -41,22 +40,38 @@ void deleteMatrix(Matrix m){
     free (m.mat);
 }
 
-int isSymetric(Matrix){ //0 si faux
-    int i, j;
+int isSquare(Matrix m){
+    return (m.nb_columns == m.nb_rows);
+}
+
+int isSymetric(Matrix m){ //0 si faux
     int retour = 1;
-    for(int i = 0; i < (m.nb_columns * m.nb_rows); i++){
-        for(j = 0; j < (m.nb_columns * m.nb_rows); j++){
-            if(getElt(m,i,j) != getElt(m,j,i) && i!=j){
-                retour = 0;
+    if(isSquare(m)){
+        for(int i = 0; i < (m.nb_columns * m.nb_rows); i++){
+            for(int j = 0; j < (m.nb_columns * m.nb_rows); j++){
+                if(getElt(m,i,j) != getElt(m,j,i) && i!=j){
+                    retour = 0;
+            }
+        }
+        return retour;
         }
     }
-    return retour;
+    return 0;
+}
+
+void printMatrix(Matrix m){
+    for(int i = 1; i <= m.nb_rows; i++){
+        for(int j = 1; j <= m.nb_columns; j++){
+            printf("%f\t", getElt(m, i, j));
+        }
+        printf("\n");
+    }
 }
 
 int main(){
     Matrix m = newMatrix(5,5);
-    setElt(m, 1,1, 2.5);
-    E elt = getElt(m, 1, 1);
-    printf("%f\n", elt);
+    setElt(m, 1, 3, 2.5);
+    printMatrix(m);
     deleteMatrix(m);
+    return 0;
 }
