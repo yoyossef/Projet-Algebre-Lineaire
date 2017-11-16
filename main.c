@@ -1,14 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+#include "tp1.h"
 
-typedef float E;
-typedef struct matrix {
-    E *mat;
-    int nb_rows, nb_columns;
-} Matrix;
-
-//Fonction qui crée une matrice, en fonction des paramètres nb_rows et nb_columns
+//Creates a Matrix with nb_rows rows and nb_columns columns
 
 Matrix newMatrix(int nb_rows, int nb_columns){
     Matrix m;
@@ -22,7 +14,7 @@ E getElt(Matrix m, int row, int column){
     //Le tableau étant d'une dimension, voici une manière (pas très intuitive) de récupérer
     //l'élément d'une cellule d'une matrice donné.
     if(column > m.nb_columns || row > m.nb_rows || column < 1 || row < 1){
-        fprintf(stderr, "Erreur getElt, vous dépassez la dimension de la matrice\n");
+        fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded\n\n");
         exit(1);
     }
     return m.mat[(row-1)*m.nb_columns + column - 1];
@@ -30,7 +22,7 @@ E getElt(Matrix m, int row, int column){
 
 void setElt(Matrix m, int row, int column, E val){
     if(column > m.nb_columns || row > m.nb_rows){
-        fprintf(stderr, "Erreur setElt, vous dépassez la dimension de la matrice\n");
+        fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded\n\n");
         exit(1);
     }
     m.mat[(row-1)*m.nb_columns + column - 1] = val;
@@ -49,21 +41,23 @@ int isSymetric(Matrix m){ //0 si faux
     if(isSquare(m)){
         for(int i = 1; i <= (m.nb_rows); i++){
             for(int j = 1; j <= (m.nb_columns); j++){
-                if(getElt(m,i,j) != getElt(m,j,i) && i!=j){
+                if(getElt(m,i,j) != getElt(m,j,i) && i!=j)
                     retour = 0;
             }
-        }
-        return retour;
+            return retour;
         }
     }
     return 0;
 }
 
 void printMatrix(Matrix m){
-    for(int i = 1; i <= m.nb_rows; i++){
-        for(int j = 1; j <= m.nb_columns; j++){
-            E elt = getElt(m, i, j);
-            printf("%f\t", elt);
+    if(m.nb_columns != 0 || m.nb_rows != 0){
+        for(int i = 1; i <= m.nb_rows; i++){
+            for(int j = 1; j <= m.nb_columns; j++){
+                E elt = getElt(m, i, j);
+                printf("%f\t", elt);
+            }
+            printf("\n");
         }
         printf("\n");
     }
@@ -80,9 +74,15 @@ Matrix transpose(Matrix m){
 }
 
 Matrix addition(Matrix a, Matrix b){
-    if(a.nb_columns != b.nb_columns || a.nb_rows != b.nb_rows)
-        fprintf(stderr, "Erreur addition, les deux n'ont matrices n'ont pas la même dimension\n");
     Matrix add = newMatrix(a.nb_rows, a.nb_columns);
+    if(a.nb_columns != b.nb_columns || a.nb_rows != b.nb_rows){
+        free(add.mat);
+        add.nb_rows = 0;
+        add.nb_columns = 0;
+        add.mat = NULL;
+        fprintf(stderr, "Error addition: the two matrix don't have the same dimensions\n\n");
+        return add;
+    }
     for(int i = 1; i <= add.nb_rows; i++){
         for(int j = 1; j <= add.nb_columns; j++){
             setElt(add, i, j, (getElt(a, i, j) + getElt(b, i, j)));
@@ -93,9 +93,12 @@ Matrix addition(Matrix a, Matrix b){
 
 Matrix multiplication (Matrix a, Matrix b){
     Matrix mult = newMatrix(a.nb_rows, b.nb_columns);
-    if(a.nb_columns != b.nb_rows){
+    if(a.nb_columns != b.nb_rows){ //incompatible
         free(mult.mat);
+        mult.nb_rows = 0;
+        mult.nb_columns = 0;
         mult.mat = NULL;
+        fprintf(stderr, "multiplication is incompatible\n\n");
         return mult;
     }
     E sum = 0.0;
@@ -122,28 +125,109 @@ Matrix mult_scalar(E sc, Matrix m){
 }
 
 int main(){
-    Matrix m = newMatrix(2,2);
-    setElt(m, 1, 1, 1);
-    setElt(m, 1, 2, 2);    
-    setElt(m, 2, 1, 3);
-    setElt(m, 2, 2, 4);
-    printMatrix(m);
-    printf("Transposée : \n");
-    Matrix t = transpose(m);
-    printMatrix(t);
-    printf("Addition : \n");
-    Matrix add = addition(m, t);
-    printMatrix(add);
-    Matrix mult = multiplication(m, t);
-    printf("Multiplication : \n");
-    printMatrix(mult);
-    Matrix multsc = mult_scalar(2.0, mult);
-    printf("Multiplication par deux : \n");    
-    printMatrix(multsc);
-    deleteMatrix(multsc);
-    deleteMatrix(m);
-    deleteMatrix(t);
-    deleteMatrix(add);
-    deleteMatrix(mult);
+    Matrix A = newMatrix(3, 3);
+    printf("Matrix A: \n");
+    setElt(A, 1, 1, 1);
+    setElt(A, 1, 2, 3);    
+    setElt(A, 1, 1, 5);
+    setElt(A, 2, 1, 2);
+    setElt(A, 2, 2, 5);
+    setElt(A, 2, 3, 1);
+    setElt(A, 3, 1, -1);
+    setElt(A, 3, 2, -4);
+    setElt(A, 3, 3, -3);
+    printMatrix(A);
+    Matrix B = newMatrix(2, 3);
+    printf("Matrix B: \n");
+    setElt(B, 1, 1, 1);
+    setElt(B, 1, 2, 4);
+    setElt(B, 1, 3, 2);
+    setElt(B, 2, 1, 2);
+    setElt(B, 2, 2, 5);
+    setElt(B, 2, 3, 1);
+    printMatrix(B);
+
+    if(isSquare(A))
+        printf("A is square\n");
+    else
+        printf("A isn't square\n");
+
+    if(isSquare(B))
+        printf("B is square\n");
+    else
+        printf("B isn't square\n");
+
+    if(isSymetric(A))
+        printf("A is symetric\n");
+    else
+        printf("A isn't symetric\n");
+
+    if(isSymetric(B))
+        printf("B is symetric\n");
+    else
+        printf("B isn't symetric\n");
+
+    printf("Transposée de A : \n");
+    Matrix tA = transpose(A);
+    printMatrix(tA);
+
+    printf("Transposée de B : \n");
+    Matrix tB = transpose(B);
+    printMatrix(tB);
+
+    printf("Addition A + B : \n");
+    Matrix add_a_b = addition(A, B);
+    printMatrix(add_a_b);
+
+    printf("Addition B + A : \n");
+    Matrix add_b_a = addition(B, A);
+    printMatrix(add_b_a);
+
+    printf("Multiplication A * B : \n");
+    Matrix mult_a_b = multiplication(A, B);
+    printMatrix(mult_a_b);
+
+    printf("Multiplication B * A : \n");
+    Matrix mult_b_a = multiplication(B, A);
+    printMatrix(mult_b_a);
+
+    printf("Multiplication tA * B \n");
+    Matrix mult_ta_b = multiplication(tA, B);
+    printMatrix(mult_ta_b);
+
+    printf("Multiplication tB * A \n");
+    Matrix mult_tb_a = multiplication(tB, A);
+    printMatrix(mult_tb_a);
+
+    printf("Addition A + tA \n");
+    Matrix add_ta_a = addition(tA, A);
+    printMatrix(add_ta_a);
+
+    printf("Multiplication of A by 5 : \n");    
+    Matrix multsc_a = mult_scalar(5.0, A);
+    printMatrix(multsc_a);
+
+    printf("Multiplication of B by 3 : \n");    
+    Matrix multsc_b = mult_scalar(3.0, B);
+    printMatrix(multsc_b);
+
+    if(isSymetric(add_ta_a))
+        printf("tA + A is symetric\n");
+    else
+        printf("tA + A isn't symetric\n");
+
+    deleteMatrix(A);
+    deleteMatrix(B);
+    deleteMatrix(tA);
+    deleteMatrix(tB);
+    deleteMatrix(add_a_b);
+    deleteMatrix(add_b_a);
+    deleteMatrix(add_ta_a);
+    deleteMatrix(mult_tb_a);
+    deleteMatrix(mult_ta_b);
+    deleteMatrix(mult_b_a);
+    deleteMatrix(mult_a_b);
+    deleteMatrix(multsc_a);
+    deleteMatrix(multsc_b);
     return 0;
 }
