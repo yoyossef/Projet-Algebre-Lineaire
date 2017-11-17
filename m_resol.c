@@ -75,11 +75,19 @@ Matrix mult_row(Matrix A, int i, E k){
 
 Matrix permut_row(Matrix A, int i, int j){
     E tmp;
-    int k;
+    int k = 1;
     for(k = 1; k <= A.nb_columns; k++){
         tmp = getElt(A, i, k);
         setElt(A, i, k, getElt(A, j, k));
         setElt(A, j, k, tmp);
+    }
+    return A;
+}
+
+Matrix add_combination(Matrix A, int i, int j, E k){
+    int l = 1;
+    for(l = 1; l <= A.nb_columns; l++){
+        setElt(A, i, l, getElt(A, i, l) + (k * getElt(A, j, l)) );
     }
     return A;
 }

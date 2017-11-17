@@ -12,4 +12,10 @@ Matrix Extraction(Matrix A, int i, int j);
 
 E determinant(Matrix A);
 
+Matrix mult_row(Matrix A, E k);
+
+Matrix permut_row(Matrix A, int i, int j);
+
+Matrix add_combination(Matrix A, int i, int j, E k);
+
 #endif
