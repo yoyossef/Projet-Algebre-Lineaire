@@ -64,3 +64,11 @@ E determinant(Matrix A){
         }
     }
 }
+
+Matrix mult_row(Matrix A, int i, E k){
+    int j = 1;
+    for(j = 1; j <= A.nb_columns; j++){
+        setElt(A, i, j, k * getElt(A, i, j));
+    }
+    return A;
+}
