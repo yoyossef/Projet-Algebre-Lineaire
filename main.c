@@ -1,3 +1,4 @@
+#include "m_resol.h"
 #include "tp1.h"
 
 //Creates a Matrix with nb_rows rows and nb_columns columns
@@ -14,7 +15,7 @@ E getElt(Matrix m, int row, int column){
     //Le tableau étant d'une dimension, voici une manière (pas très intuitive) de récupérer
     //l'élément d'une cellule d'une matrice donné.
     if(column > m.nb_columns || row > m.nb_rows || column < 1 || row < 1){
-        fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded\n\n");
+        fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded, row = %d, column = %d\n\n", row, column);
         exit(1);
     }
     return m.mat[(row-1)*m.nb_columns + column - 1];
@@ -22,13 +23,16 @@ E getElt(Matrix m, int row, int column){
 
 void setElt(Matrix m, int row, int column, E val){
     if(column > m.nb_columns || row > m.nb_rows){
-        fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded\n\n");
+        fprintf(stderr, "Error setElt: the Matrix's dimensions has been exceeded, row = %d, column = %d, val = %f\n\n", row, column, val);
         exit(1);
     }
+    // printf("YES setElt: row = %d, column = %d, val = %f\n\n", row, column, val);
     m.mat[(row-1)*m.nb_columns + column - 1] = val;
 }
 
 void deleteMatrix(Matrix m){
+    m.nb_columns = 0;
+    m.nb_columns = 0;
     free (m.mat);
 }
 
@@ -127,26 +131,20 @@ Matrix mult_scalar(E sc, Matrix m){
 int main(){
     Matrix A = newMatrix(3, 3);
     printf("Matrix A: \n");
-    setElt(A, 1, 1, 1);
-    setElt(A, 1, 2, 3);    
-    setElt(A, 1, 1, 5);
-    setElt(A, 2, 1, 2);
-    setElt(A, 2, 2, 5);
-    setElt(A, 2, 3, 1);
-    setElt(A, 3, 1, -1);
-    setElt(A, 3, 2, -4);
-    setElt(A, 3, 3, -3);
+    setElt(A, 1, 1, 1); setElt(A, 1, 2, 3); setElt(A, 1, 3, 5);
+    setElt(A, 2, 1, 2); setElt(A, 2, 2, 5); setElt(A, 2, 3, 1);
+    setElt(A, 3, 1, -1); setElt(A, 3, 2, -4); setElt(A, 3, 3, -3);
     printMatrix(A);
     Matrix B = newMatrix(2, 3);
     printf("Matrix B: \n");
-    setElt(B, 1, 1, 1);
-    setElt(B, 1, 2, 4);
-    setElt(B, 1, 3, 2);
-    setElt(B, 2, 1, 2);
-    setElt(B, 2, 2, 5);
-    setElt(B, 2, 3, 1);
+    setElt(B, 1, 1, 1); setElt(B, 1, 2, 4); setElt(B, 1, 3, 2);
+    setElt(B, 2, 1, 2); setElt(B, 2, 2, 5); setElt(B, 2, 3, 1);
     printMatrix(B);
-
+    Matrix C = newMatrix(4,4);
+    setElt(C, 1, 1, 1); setElt(C, 1, 2, 2); setElt(C, 1, 3, 3); setElt(C, 1, 4, 4);
+    setElt(C, 2, 1, 5); setElt(C, 2, 2, -6); setElt(C, 2, 3, 8); setElt(C, 2, 4, 9);
+    setElt(C, 3, 1, 67); setElt(C, 3, 2, -42); setElt(C, 3, 3, 6); setElt(C, 3, 4, 5);
+    setElt(C, 4, 1, 8); setElt(C, 4, 2, 9); setElt(C, 4, 3, 19); setElt(C, 4, 4, 3);
     if(isSquare(A))
         printf("A is square\n");
     else
@@ -215,9 +213,19 @@ int main(){
         printf("tA + A is symetric\n");
     else
         printf("tA + A isn't symetric\n");
-
+    
+    double a = determinant(A);
+    if(a != DBL_MAX)
+        printf("Determinant of A: %lf\n", a);
+    double b = determinant(B);
+    if(b != DBL_MAX)
+        printf("Determinant of B: %lf\n", b);
+    double c = determinant(C);
+    if(c != DBL_MAX)
+        printf("Determinant of C: %lf\n", c);
     deleteMatrix(A);
     deleteMatrix(B);
+    deleteMatrix(C);
     deleteMatrix(tA);
     deleteMatrix(tB);
     deleteMatrix(add_a_b);

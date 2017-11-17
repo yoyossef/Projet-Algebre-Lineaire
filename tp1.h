@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+#ifndef __TP1_H
+#define __TP1_H
 
 typedef float E;
 typedef struct matrix {
@@ -29,3 +28,5 @@ Matrix addition(Matrix a, Matrix b);
 Matrix multiplication (Matrix a, Matrix b);
 
 Matrix mult_scalar(E sc, Matrix m);
+
+#endif
