@@ -72,3 +72,14 @@ Matrix mult_row(Matrix A, int i, E k){
     }
     return A;
 }
+
+Matrix permut_row(Matrix A, int i, int j){
+    E tmp;
+    int k;
+    for(k = 1; k <= A.nb_columns; k++){
+        tmp = getElt(A, i, k);
+        setElt(A, i, k, getElt(A, j, k));
+        setElt(A, j, k, tmp);
+    }
+    return A;
+}
