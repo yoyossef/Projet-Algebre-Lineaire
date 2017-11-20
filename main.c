@@ -1,7 +1,14 @@
 #include "m_resol.h"
 #include "tp1.h"
 
-//Creates a Matrix with nb_rows rows and nb_columns columns
+/**
+ * \fn Matrix newMatrix(int nb_rows, int nb_columns)
+ * \brief Creates a Matrix with nb_rows rows and nb_columns columns
+ *
+ * \param int nb_rows
+ * \param int nb_columns
+ * \return a new matrix of nb_rows rows and nb_columns columns
+ */
 
 Matrix newMatrix(int nb_rows, int nb_columns){
     Matrix m;
@@ -11,15 +18,35 @@ Matrix newMatrix(int nb_rows, int nb_columns){
     return m;
 }
 
+/**
+ * \fn E getElt(Matrix m, int row, int column)
+ * \brief Gives the element at the row i and column j of the matrix m
+ *
+ * \param Matrix m
+ * \param int row
+ * \param int column
+ * \return the m(i,j) element
+ */
+
 E getElt(Matrix m, int row, int column){
-    //Le tableau étant d'une dimension, voici une manière (pas très intuitive) de récupérer
-    //l'élément d'une cellule d'une matrice donné.
+
     if(column > m.nb_columns || row > m.nb_rows || column < 1 || row < 1){
         fprintf(stderr, "Error getElt: the Matrix's dimensions has been exceeded, row = %d, column = %d\n\n", row, column);
         exit(1);
     }
     return m.mat[(row-1)*m.nb_columns + column - 1];
 }
+
+/**
+ * \fn setElt(Matrix m, int row, int column, E val)
+ * \brief Sets the value of the m(i,j) element of the matrix m at "val"
+ *
+ * \param Matrix m
+ * \param int row
+ * \param int column
+ * \param E val
+ * \return the modified matrix
+ */
 
 void setElt(Matrix m, int row, int column, E val){
     if(column > m.nb_columns || row > m.nb_rows){
@@ -30,17 +57,42 @@ void setElt(Matrix m, int row, int column, E val){
     m.mat[(row-1)*m.nb_columns + column - 1] = val;
 }
 
+/**
+ * \fn void deleteMatrix(Matrix m)
+ * \brief Deletes a Matrix by freeing the mat array and putting its number of
+ *  rows/columns at 0
+ *
+ * \param Matrix m
+ * \return void
+ */
+
 void deleteMatrix(Matrix m){
     m.nb_columns = 0;
     m.nb_columns = 0;
     free (m.mat);
 }
 
+/**
+ * \fn int isSquare(Matrix m)
+ * \brief tests if the matrix is square or not
+ *
+ * \param Matrix m
+ * \return 1 if it's square, 0 otherwise
+ */
+
 int isSquare(Matrix m){
     return (m.nb_columns == m.nb_rows);
 }
 
-int isSymetric(Matrix m){ //0 si faux
+/**
+ * \fn int isSymetric(Matrix m)
+ * \brief tests if the matrix is symetric or not
+ *
+ * \param Matrix m
+ * \return 1 if it's symetric, 0 otherwise
+ */
+
+int isSymetric(Matrix m){
     int retour = 1;
     if(isSquare(m)){
         for(int i = 1; i <= (m.nb_rows); i++){
@@ -53,6 +105,14 @@ int isSymetric(Matrix m){ //0 si faux
     }
     return 0;
 }
+
+/**
+ * \fn void printMatrix(Matrix m)
+ * \brief prints the Matrix m
+ *
+ * \param Matrix m
+ * \return void
+ */
 
 void printMatrix(Matrix m){
     if(m.nb_columns != 0 || m.nb_rows != 0){
@@ -67,6 +127,14 @@ void printMatrix(Matrix m){
     }
 }
 
+/**
+ * \fn Matrix transpose(Matrix m)
+ * \brief Calculates the transposed matrix m into a new matrix and returns it
+ *
+ * \param Matrix m
+ * \return the new transposed matrix
+ */
+
 Matrix transpose(Matrix m){
     Matrix t = newMatrix(m.nb_columns, m.nb_rows);
     for(int i = 1; i <= t.nb_rows; i++){
@@ -76,6 +144,16 @@ Matrix transpose(Matrix m){
     }
     return t;
 }
+
+/**
+ * \fn Matrix addition(Matrix a, Matrix b)
+ * \brief Calculates the addition of a and b if they are compatible and returns
+ *  a new matrix that contains the addition of a and b
+ *
+ * \param Matrix a
+ * \param Matrix b
+ * \return the additionned Matrix, or a null matrix if it's not compatible
+ */
 
 Matrix addition(Matrix a, Matrix b){
     Matrix add = newMatrix(a.nb_rows, a.nb_columns);
@@ -94,6 +172,16 @@ Matrix addition(Matrix a, Matrix b){
     }
     return add;
 }
+
+/**
+ * \fn Matrix multiplication (Matrix a, Matrix b)
+ * \brief Calculates the multiplication of a and b if they are compatible and returns
+ *  a new matrix that contains the multiplication of a and b
+ *
+ * \param Matrix a
+ * \param Matrix b
+ * \return the multiplicated Matrix, or a null matrix if it's not compatible
+ */
 
 Matrix multiplication (Matrix a, Matrix b){
     Matrix mult = newMatrix(a.nb_rows, b.nb_columns);
@@ -117,6 +205,16 @@ Matrix multiplication (Matrix a, Matrix b){
     }
     return mult;
 }
+
+/**
+ * \fn Matrix mult_scalar(E sc, Matrix m)
+ * \brief Multiplies the matrix m by the scalar sc and saves it into a new
+ *  matrix
+ *
+ * \param E sc
+ * \param Matrix m
+ * \return the multiplicated Matrix
+ */
 
 Matrix mult_scalar(E sc, Matrix m){
     Matrix mult = newMatrix(m.nb_rows, m.nb_columns);
@@ -223,6 +321,8 @@ int main(){
     double c = determinant(C);
     if(c != DBL_MAX)
         printf("Determinant of C: %lf\n", c);
+    pivotDeGauss(A, true);
+    printMatrix(A);
     deleteMatrix(A);
     deleteMatrix(B);
     deleteMatrix(C);

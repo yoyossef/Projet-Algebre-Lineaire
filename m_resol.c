@@ -1,5 +1,21 @@
+/**
+ * \file m_resol.c
+ * \brief Contains functions that helps to resolve a system of equations
+ * \author ROSTAQI Yossef
+ * \date 16 Novembre 2017
+ */
+
 #include "m_resol.h"
 #include "tp1.h"
+
+/**
+ * \fn Matrix Extraction(Matrix A, int i, int j)
+ * \brief Creates an extracted Matrix from A, ignoring the row i and the column j
+ *
+ * \param int i
+ * \param int j
+ * \return the extracted matrix
+ */
 
 Matrix Extraction(Matrix A, int i, int j){
     // The extracted Matrix has a dimension of A's - 1
@@ -31,6 +47,15 @@ Matrix Extraction(Matrix A, int i, int j){
     }
     return extracted;
 }
+
+/**
+ * \fn E determinant(Matrix A)
+ * \brief Gives the determinant of Matrix A
+ *
+ * \param Matrix A
+ * \return the determinant (if defined) of A
+ * if it's not defined it returns DBL_MAX
+ */
 
 E determinant(Matrix A){
     E det = 0.0;
@@ -65,6 +90,17 @@ E determinant(Matrix A){
     }
 }
 
+
+/**
+ * \fn Matrix mult_row(Matrix A, int i, E k)
+ * \brief multiplies the row i of Matrix A by k
+ *
+ * \param Matrix A
+ * \param int i
+ * \param E k
+ * \return a modified Matrix
+ */
+
 Matrix mult_row(Matrix A, int i, E k){
     int j = 1;
     for(j = 1; j <= A.nb_columns; j++){
@@ -72,6 +108,16 @@ Matrix mult_row(Matrix A, int i, E k){
     }
     return A;
 }
+
+/**
+ * \fn Matrix permut_row(Matrix A, int i, int j)
+ * \brief permuts the i row with the j row of Matrix A
+ *
+ * \param Matrix A
+ * \param int i
+ * \param int j
+ * \return a modified Matrix
+ */
 
 Matrix permut_row(Matrix A, int i, int j){
     E tmp;
@@ -84,6 +130,17 @@ Matrix permut_row(Matrix A, int i, int j){
     return A;
 }
 
+/**
+ * \fn Matrix add_combination(Matrix A, int i, int j, E k)
+ * \brief adds to Matrix A's row i a multiplication of the row j by k
+ *
+ * \param Matrix A
+ * \param int i
+ * \param int j
+ * \param E k
+ * \return a modified Matrix
+ */
+
 Matrix add_combination(Matrix A, int i, int j, E k){
     int l = 1;
     for(l = 1; l <= A.nb_columns; l++){
@@ -91,3 +148,56 @@ Matrix add_combination(Matrix A, int i, int j, E k){
     }
     return A;
 }
+
+/**
+ * \fn Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix)
+ * \brief
+ *
+ * \param Matrix A
+ * \param bool upperTriangularMatrix
+ * \return a modified Matrix
+ */
+
+Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
+    int k, i, j;
+    E pivot, q;
+    if(upperTriangularMatrix){
+        for(k = 1; k <= A.nb_rows; k++){
+            pivot = getElt(A, k, k);
+            for(i = k + 1; i <= A.nb_rows; i++){
+                q = getElt(A, i, k);
+                setElt(A, i, k, 0.0);
+                for(j = k+1; j <= A.nb_columns; j++){
+                    // add_combination(A, i, k, -q/pivot);
+                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
+                }
+            }
+        }
+        return A;
+    }
+    else{
+        for(k = A.nb_rows; k >= 1; k--){
+            pivot = getElt(A, k, k);
+            for(i = k - 1; i >= 1; i--){
+                q = getElt(A,i,k);
+                setElt(A, i, k, 0.0);
+                for(j = k - 1; j >= 1; j--){
+                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
+                }
+            }
+        }
+        for(k = 1; k <= A.nb_rows; k++){
+            pivot = getElt(A, k, k);
+            for(i = k + 1; i <= A.nb_rows; i++){
+                q = getElt(A, i, k);
+                setElt(A, i, k, 0.0);
+                for(j = k+1; j <= A.nb_columns; j++){
+                    // add_combination(A, i, k, -q/pivot);
+                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
+                }
+            }
+        }
+        return A;
+    }
+}
+
