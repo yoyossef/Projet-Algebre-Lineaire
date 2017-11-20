@@ -68,7 +68,7 @@ void setElt(Matrix m, int row, int column, E val){
 
 void deleteMatrix(Matrix m){
     m.nb_columns = 0;
-    m.nb_columns = 0;
+    m.nb_rows = 0;
     free (m.mat);
 }
 
@@ -321,8 +321,11 @@ int main(){
     double c = determinant(C);
     if(c != DBL_MAX)
         printf("Determinant of C: %lf\n", c);
-    pivotDeGauss(A, true);
-    printMatrix(A);
+    Matrix gauss = pivotDeGauss(A, true);
+    double detgauss = determinant2(gauss);
+    printMatrix(gauss);
+    printf("Determinant of A : %lf\n", detgauss);
+    deleteMatrix(gauss);
     deleteMatrix(A);
     deleteMatrix(B);
     deleteMatrix(C);
@@ -337,5 +340,6 @@ int main(){
     deleteMatrix(mult_a_b);
     deleteMatrix(multsc_a);
     deleteMatrix(multsc_b);
+    // printf("%f\n %d\n", B.mat[0], B.nb_rows);
     return 0;
 }

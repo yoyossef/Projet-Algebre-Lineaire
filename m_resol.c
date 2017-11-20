@@ -149,6 +149,23 @@ Matrix add_combination(Matrix A, int i, int j, E k){
     return A;
 }
 
+/** 
+ * \fn void copyMatrix(Matrix src, Matrix dest)
+ * \brief copy the matrix src into matrix dest
+ * 
+ * \param Matrix src
+ * \param Matrix dest
+ * \return void
+ * */
+
+void copyMatrix(Matrix src, Matrix dest){
+    for(int i = 1; i <= src.nb_rows; i++){
+        for(int j = 1; j <= src.nb_columns; j++){
+            setElt(dest, i, j, getElt(src, i, j));
+        }
+    }
+}
+
 /**
  * \fn Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix)
  * \brief
@@ -159,45 +176,46 @@ Matrix add_combination(Matrix A, int i, int j, E k){
  */
 
 Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
+    Matrix m = newMatrix(A.nb_rows, A.nb_columns);
+    copyMatrix(A, m);
     int k, i, j;
     E pivot, q;
-    if(upperTriangularMatrix){
-        for(k = 1; k <= A.nb_rows; k++){
-            pivot = getElt(A, k, k);
-            for(i = k + 1; i <= A.nb_rows; i++){
-                q = getElt(A, i, k);
-                setElt(A, i, k, 0.0);
-                for(j = k+1; j <= A.nb_columns; j++){
-                    // add_combination(A, i, k, -q/pivot);
-                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
-                }
+    for(k = 1; k <= m.nb_rows; k++){
+        pivot = getElt(m, k, k);
+        for(i = k + 1; i <= m.nb_rows; i++){
+            q = getElt(m, i, k);
+            setElt(m, i, k, 0.0);
+            for(j = k+1; j <= m.nb_columns; j++){
+                // add_combination(A, i, k, -q/pivot);
+                setElt(m, i, j, getElt(m, i, j) - getElt(m, k, j) * (q/pivot) );
             }
         }
-        return A;
+    }
+    if(upperTriangularMatrix){
+        return m;
     }
     else{
-        for(k = A.nb_rows; k >= 1; k--){
-            pivot = getElt(A, k, k);
-            for(i = k - 1; i >= 1; i--){
-                q = getElt(A,i,k);
-                setElt(A, i, k, 0.0);
-                for(j = k - 1; j >= 1; j--){
-                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
-                }
-            }
+        i = 1;
+        for(i = 1; i <= A.nb_rows; i++){
+            mult_row(m, i, 1/getElt(m, i, i));
         }
-        for(k = 1; k <= A.nb_rows; k++){
-            pivot = getElt(A, k, k);
-            for(i = k + 1; i <= A.nb_rows; i++){
-                q = getElt(A, i, k);
-                setElt(A, i, k, 0.0);
-                for(j = k+1; j <= A.nb_columns; j++){
-                    // add_combination(A, i, k, -q/pivot);
-                    setElt(A, i, j, getElt(A, i, j) - getElt(A, k, j) * (q/pivot) );
-                }
-            }
-        }
-        return A;
+        return m;
     }
 }
 
+/**
+ * \fn E determinant2(Matrix m)
+ * \brief founds the determinant from a upper triangular matrix (more optimised)
+ *
+ * \param Matrix m
+ * \return the determinant of the matrix
+ * \pre m must be a upper triangular matrix
+ */
+
+E determinant2(Matrix m){
+    E det = 1;
+    for(int i = 1; i <= m.nb_rows; i++){
+        det *= getElt(m, i, i);
+    }
+    return det;
+}
