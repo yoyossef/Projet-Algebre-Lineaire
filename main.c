@@ -260,6 +260,34 @@ Matrix setMatrixBlock(Matrix A, int row, int column, Matrix B){
 	return C;
 }
 
+/**
+ * \fn Matrix getMatrixBlock(Matrix A, int row, int column, int nb_rows, int nb_columns)
+ * \brief Creates a new matrix D based on A which extracts the Matrix block
+ *  of nb_rows * nb_columns from A(row, column)
+ *
+ * \param Matrix A
+ * \param int row
+ * \param int column
+ * \param int nb_rows
+ * \param int nb_columns
+ * \return the Matrix D
+ */
+
+Matrix getMatrixBlock(Matrix A, int row, int column, int nb_rows, int nb_columns){
+	Matrix D = newMatrix(nb_rows,nb_columns);
+ 	if(nb_rows + row-1 > A.nb_rows || nb_columns + column-1 > A.nb_columns){
+		fprintf(stderr,"getMatrixBlock: Cannot get the Block \n");
+        deleteMatrix(D);
+		return D;
+	}
+	for(int i = 1; i <= nb_rows; i++){
+		for(int j = 1; j <= nb_columns; j++){
+			setElt(D, i, j, getElt(A, row + i - 1, column + j - 1) );
+		}
+	}
+	return D;
+}
+
 int main(){
     Matrix A = newMatrix(3, 3);
     printf("Matrix A: \n");
@@ -345,15 +373,23 @@ int main(){
         printf("tA + A is symetric\n");
     else
         printf("tA + A isn't symetric\n");
+
     printf("Matrix C = setMatrixBlock(A, 2, 1, B)\n");
     Matrix C = setMatrixBlock(A, 2, 1, B);
     printMatrix(C);
+
+    printf("Matrix D = getMatrixBlock(A, 1, 1, 2, 2)\n");
+    Matrix D = getMatrixBlock(A, 1, 1, 2, 2);
+    printMatrix(D);
+
     double a = determinant(A);
     if(a != DBL_MAX)
         printf("Determinant of A: %lf\n", a);
+
     double b = determinant(B);
     if(b != DBL_MAX)
         printf("Determinant of B: %lf\n", b);
+
     double g = determinant(G);
     if(g != DBL_MAX)
         printf("Determinant of G: %lf\n", g);
@@ -366,6 +402,7 @@ int main(){
     deleteMatrix(A);
     deleteMatrix(B);
     deleteMatrix(C);
+    deleteMatrix(D);
     deleteMatrix(G);
     deleteMatrix(tA);
     deleteMatrix(tB);
