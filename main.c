@@ -226,6 +226,40 @@ Matrix mult_scalar(E sc, Matrix m){
     return mult;
 }
 
+/**
+ * \fn Matrix setMatrixBlock(Matrix A, int row, int column, Matrix B)
+ * \brief Creates a new matrix C based on A which adds the block formed by Matrix B
+ *
+ * \param Matrix A
+ * \param int row
+ * \param int column
+ * \param Matrix B
+ * \return the Matrix C
+ */
+
+Matrix setMatrixBlock(Matrix A, int row, int column, Matrix B){
+    Matrix C = newMatrix(A.nb_rows, A.nb_columns);
+    int i, j;
+    for(int i=1; i <= C.nb_rows; i++){
+		for(int j=1; j <= C.nb_columns; j++){
+			setElt(C, i, j, getElt(A,i,j));
+		}
+	}
+
+	if(B.nb_rows + row - 1 > A.nb_rows || B.nb_columns + column - 1 > A.nb_columns){
+		fprintf(stderr,"setMatrixBlock: Cannot set the Block \n");
+        deleteMatrix(C);
+		return C;
+	}
+
+	for(i = row; i < row + B.nb_rows; i++){
+		for(j = column; j < column + B.nb_columns; j++){
+			setElt(C, i, j, getElt(B, i-row+1, j-column+1));
+		}
+	}
+	return C;
+}
+
 int main(){
     Matrix A = newMatrix(3, 3);
     printf("Matrix A: \n");
@@ -238,11 +272,11 @@ int main(){
     setElt(B, 1, 1, 1); setElt(B, 1, 2, 4); setElt(B, 1, 3, 2);
     setElt(B, 2, 1, 2); setElt(B, 2, 2, 5); setElt(B, 2, 3, 1);
     printMatrix(B);
-    Matrix C = newMatrix(4,4);
-    setElt(C, 1, 1, 1); setElt(C, 1, 2, 2); setElt(C, 1, 3, 3); setElt(C, 1, 4, 4);
-    setElt(C, 2, 1, 5); setElt(C, 2, 2, -6); setElt(C, 2, 3, 8); setElt(C, 2, 4, 9);
-    setElt(C, 3, 1, 67); setElt(C, 3, 2, -42); setElt(C, 3, 3, 6); setElt(C, 3, 4, 5);
-    setElt(C, 4, 1, 8); setElt(C, 4, 2, 9); setElt(C, 4, 3, 19); setElt(C, 4, 4, 3);
+    Matrix G = newMatrix(4,4);
+    setElt(G, 1, 1, 1); setElt(G, 1, 2, 2); setElt(G, 1, 3, 3); setElt(G, 1, 4, 4);
+    setElt(G, 2, 1, 5); setElt(G, 2, 2, -6); setElt(G, 2, 3, 8); setElt(G, 2, 4, 9);
+    setElt(G, 3, 1, 67); setElt(G, 3, 2, -42); setElt(G, 3, 3, 6); setElt(G, 3, 4, 5);
+    setElt(G, 4, 1, 8); setElt(G, 4, 2, 9); setElt(G, 4, 3, 19); setElt(G, 4, 4, 3);
     if(isSquare(A))
         printf("A is square\n");
     else
@@ -311,16 +345,19 @@ int main(){
         printf("tA + A is symetric\n");
     else
         printf("tA + A isn't symetric\n");
-    
+    printf("Matrix C = setMatrixBlock(A, 2, 1, B)\n");
+    Matrix C = setMatrixBlock(A, 2, 1, B);
+    printMatrix(C);
     double a = determinant(A);
     if(a != DBL_MAX)
         printf("Determinant of A: %lf\n", a);
     double b = determinant(B);
     if(b != DBL_MAX)
         printf("Determinant of B: %lf\n", b);
-    double c = determinant(C);
-    if(c != DBL_MAX)
-        printf("Determinant of C: %lf\n", c);
+    double g = determinant(G);
+    if(g != DBL_MAX)
+        printf("Determinant of G: %lf\n", g);
+
     Matrix gauss = pivotDeGauss(A, true);
     double detgauss = determinant2(gauss);
     printMatrix(gauss);
@@ -329,6 +366,7 @@ int main(){
     deleteMatrix(A);
     deleteMatrix(B);
     deleteMatrix(C);
+    deleteMatrix(G);
     deleteMatrix(tA);
     deleteMatrix(tB);
     deleteMatrix(add_a_b);
