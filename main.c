@@ -7,12 +7,18 @@
  *
  * \param int nb_rows
  * \param int nb_columns
+ * \pre the number of rows and columns must be superior to 0
  * \return a new matrix of nb_rows rows and nb_columns columns
  */
 
 Matrix newMatrix(int nb_rows, int nb_columns){
     Matrix m;
-    m.mat = malloc(nb_rows * nb_columns * sizeof(E));
+    if(nb_rows == 0 || nb_columns == 0){
+        fprintf(stderr, "newMatrix: the number of rows and columns must be superior to 0\n");
+        m.mat = NULL;
+    }
+    else
+        m.mat = malloc(nb_rows * nb_columns * sizeof(E));
     m.nb_rows = nb_rows;
     m.nb_columns = nb_columns;
     return m;
@@ -119,7 +125,7 @@ void printMatrix(Matrix m){
         for(int i = 1; i <= m.nb_rows; i++){
             for(int j = 1; j <= m.nb_columns; j++){
                 E elt = getElt(m, i, j);
-                printf("%f\t", elt);
+                printf("%.2f\t", elt);
             }
             printf("\n");
         }
@@ -162,7 +168,7 @@ Matrix addition(Matrix a, Matrix b){
         add.nb_rows = 0;
         add.nb_columns = 0;
         add.mat = NULL;
-        fprintf(stderr, "Error addition: the two matrix don't have the same dimensions\n\n");
+        fprintf(stderr, "Error addition: the two matrices don't have the same dimensions\n\n");
         return add;
     }
     for(int i = 1; i <= add.nb_rows; i++){
@@ -295,16 +301,13 @@ int main(){
     setElt(A, 2, 1, 2); setElt(A, 2, 2, 5); setElt(A, 2, 3, 1);
     setElt(A, 3, 1, -1); setElt(A, 3, 2, -4); setElt(A, 3, 3, -3);
     printMatrix(A);
+
     Matrix B = newMatrix(2, 3);
     printf("Matrix B: \n");
     setElt(B, 1, 1, 1); setElt(B, 1, 2, 4); setElt(B, 1, 3, 2);
     setElt(B, 2, 1, 2); setElt(B, 2, 2, 5); setElt(B, 2, 3, 1);
     printMatrix(B);
-    Matrix G = newMatrix(4,4);
-    setElt(G, 1, 1, 1); setElt(G, 1, 2, 2); setElt(G, 1, 3, 3); setElt(G, 1, 4, 4);
-    setElt(G, 2, 1, 5); setElt(G, 2, 2, -6); setElt(G, 2, 3, 8); setElt(G, 2, 4, 9);
-    setElt(G, 3, 1, 67); setElt(G, 3, 2, -42); setElt(G, 3, 3, 6); setElt(G, 3, 4, 5);
-    setElt(G, 4, 1, 8); setElt(G, 4, 2, 9); setElt(G, 4, 3, 19); setElt(G, 4, 4, 3);
+   
     if(isSquare(A))
         printf("A is square\n");
     else
@@ -325,11 +328,11 @@ int main(){
     else
         printf("B isn't symetric\n");
 
-    printf("Transposée de A : \n");
+    printf("Transpose of A : \n");
     Matrix tA = transpose(A);
     printMatrix(tA);
 
-    printf("Transposée de B : \n");
+    printf("Transpose of B : \n");
     Matrix tB = transpose(B);
     printMatrix(tB);
 
@@ -382,28 +385,38 @@ int main(){
     Matrix D = getMatrixBlock(A, 1, 1, 2, 2);
     printMatrix(D);
 
-    double a = determinant(A);
-    if(a != DBL_MAX)
-        printf("Determinant of A: %lf\n", a);
+    E det_a = determinant(A);
+    if(det_a != DBL_MAX)
+        printf("Determinant of A: %f\n", det_a);
 
-    double b = determinant(B);
-    if(b != DBL_MAX)
-        printf("Determinant of B: %lf\n", b);
+    E det_b = determinant(B);
+    if(det_b != DBL_MAX)
+        printf("Determinant of B: %f\n", det_b);
 
-    double g = determinant(G);
-    if(g != DBL_MAX)
-        printf("Determinant of G: %lf\n", g);
-
+    printf("Determinant of A with gauss: \n");
     Matrix gauss = pivotDeGauss(A, true);
-    double detgauss = determinant2(gauss);
+    E detgauss = determinant2(gauss);
     printMatrix(gauss);
-    printf("Determinant of A : %lf\n", detgauss);
+    printf("Determinant of A (with gauss) : %f\n", detgauss);
+
+    printf("Resolution of Ax = b:\n");
+	Matrix be=newMatrix(3,1);
+	setElt(be,1,1,0);
+	setElt(be,2,1,-7);
+	setElt(be,3,1,4);
+    printf("Matrix b : \n");
+    printMatrix(be);
+    Matrix res = resolution(A, be);
+    printf("Matrix x : \n");
+    printMatrix(res);
+
+    deleteMatrix(be);
+    deleteMatrix(res);
     deleteMatrix(gauss);
     deleteMatrix(A);
     deleteMatrix(B);
     deleteMatrix(C);
     deleteMatrix(D);
-    deleteMatrix(G);
     deleteMatrix(tA);
     deleteMatrix(tB);
     deleteMatrix(add_a_b);
