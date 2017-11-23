@@ -237,6 +237,7 @@ Matrix resolution(Matrix A, Matrix B){
 	Matrix tmp2 = setMatrixBlock(tmp1, 1, A.nb_columns + 1, B);
 	deleteMatrix(tmp1);
 	Matrix tmp3 = pivotDeGauss(tmp2,0);
+    deleteMatrix(tmp2);
     // We extract the solutions (placed where Matrix B was) into Matrix x:
 	Matrix x = getMatrixBlock(tmp3, 1, A.nb_columns+1, B.nb_rows, B.nb_columns);
     deleteMatrix(tmp3);
