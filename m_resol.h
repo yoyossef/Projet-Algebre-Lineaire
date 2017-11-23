@@ -28,4 +28,6 @@ Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix);
 
 E determinant2(Matrix m);
 
+Matrix resolution(Matrix A, Matrix x);
+
 #endif

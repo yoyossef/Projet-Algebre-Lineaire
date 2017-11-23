@@ -62,6 +62,7 @@ E determinant(Matrix A){
     int i = 1;
     if(!isSquare(A)){
         fprintf(stderr, "Matrix isn't square, no determinant\n");
+        // I chose to return "infinity" if the Matrix isn't square
         return DBL_MAX;
     }
     else{
@@ -186,7 +187,6 @@ Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
             q = getElt(m, i, k);
             setElt(m, i, k, 0.0);
             for(j = k+1; j <= m.nb_columns; j++){
-                // add_combination(A, i, k, -q/pivot);
                 setElt(m, i, j, getElt(m, i, j) - getElt(m, k, j) * (q/pivot) );
             }
         }
@@ -195,10 +195,18 @@ Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
         return m;
     }
     else{
-        i = 1;
-        for(i = 1; i <= A.nb_rows; i++){
-            mult_row(m, i, 1/getElt(m, i, i));
-        }
+            i = 1;
+            for(i = 1; i <= A.nb_rows; i++)
+                mult_row(m, i, 1/getElt(m, i, i));
+            for(k = m.nb_rows; k >= 1; k--){
+                pivot = getElt(m, k, k);
+                for(i = k-1; i>= 1; i--){
+                    q = getElt(m, i, k);
+                    setElt(m, i, k, 0.0);
+                    for(j = m.nb_columns; j >= k+1; j--)
+                        setElt(m, i, j, getElt(m, i, j) - getElt(m, k, j) * (q/pivot) );
+                }
+            }
         return m;
     }
 }
@@ -218,4 +226,19 @@ E determinant2(Matrix m){
         det *= getElt(m, i, i);
     }
     return det;
+}
+
+
+Matrix resolution(Matrix A, Matrix B){
+
+	Matrix tmp = newMatrix(A.nb_rows,A.nb_columns+1);
+	Matrix tmp1 = setMatrixBlock(tmp, 1, 1, A);
+	deleteMatrix(tmp);
+	Matrix tmp2 = setMatrixBlock(tmp1, 1, A.nb_columns + 1, B);
+	deleteMatrix(tmp1);
+	Matrix tmp3 = pivotDeGauss(tmp2,0);
+    // We extract the solutions (placed where Matrix B was) into Matrix x:
+	Matrix x = getMatrixBlock(tmp3, 1, A.nb_columns+1, B.nb_rows, B.nb_columns);
+    deleteMatrix(tmp3);
+	return x;
 }
