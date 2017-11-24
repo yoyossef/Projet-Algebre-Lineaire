@@ -29,4 +29,8 @@ Matrix multiplication (Matrix a, Matrix b);
 
 Matrix mult_scalar(E sc, Matrix m);
 
+Matrix setMatrixBlock(Matrix A, int row, int column, Matrix B);
+
+Matrix getMatrixBlock(Matrix A, int row, int column, int nb_rows, int nb_columns);
+
 #endif

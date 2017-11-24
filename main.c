@@ -400,9 +400,11 @@ int main(){
 
     printf("\tExercice 1.8\n");
 
+    printf("Matrix A : \n");
     E det_a = determinant(A);
     printf("Determinant of A: %f\n", det_a);
 
+    printf("Matrix B : \n");
     E det_b = determinant(B);
     printf("Determinant of B: %f\n", det_b);
 

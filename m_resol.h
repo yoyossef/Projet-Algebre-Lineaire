@@ -32,4 +32,6 @@ Matrix resolution(Matrix A, Matrix x);
 
 Matrix inverse(Matrix A);
 
+void decomposition_L_U(Matrix A, Matrix L, Matrix U);
+
 #endif
