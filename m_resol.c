@@ -181,6 +181,7 @@ Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
     copyMatrix(A, m);
     int k, i, j;
     E pivot, q;
+    // Algorithme de pivot de Gauss semblable au cours (cf cours 5ieme partie)
     for(k = 1; k <= m.nb_rows; k++){
         pivot = getElt(m, k, k);
         for(i = k + 1; i <= m.nb_rows; i++){
@@ -196,8 +197,10 @@ Matrix pivotDeGauss(Matrix A, bool upperTriangularMatrix){
     }
     else{
             i = 1;
+            // Pour avoir des "1" sur la diagonale
             for(i = 1; i <= A.nb_rows; i++)
                 mult_row(m, i, 1/getElt(m, i, i));
+            // Pour avoir une matrice triangulaire inférieur (inférieur + supérieur = diagonale) :
             for(k = m.nb_rows; k >= 1; k--){
                 pivot = getElt(m, k, k);
                 for(i = k-1; i>= 1; i--){
@@ -228,9 +231,16 @@ E determinant2(Matrix m){
     return det;
 }
 
+/**
+ * \fn Matrix resolution(Matrix A, Matrix B)
+ * \brief This function finds the Matrix x as Ax = b
+ *
+ * \param Matrix A
+ * \param Matrix B
+ * \return The Matrix x
+ */
 
 Matrix resolution(Matrix A, Matrix B){
-
 	Matrix tmp = newMatrix(A.nb_rows,A.nb_columns+1);
 	Matrix tmp1 = setMatrixBlock(tmp, 1, 1, A);
 	deleteMatrix(tmp);
@@ -242,4 +252,38 @@ Matrix resolution(Matrix A, Matrix B){
 	Matrix x = getMatrixBlock(tmp3, 1, A.nb_columns+1, B.nb_rows, B.nb_columns);
     deleteMatrix(tmp3);
 	return x;
+}
+
+/**
+ * \fn Matrix inverse(Matrix A)
+ * \brief It gives the inverse matrix of A
+ *
+ * \param Matrix A
+ * \return The inverted matrix
+ */
+
+Matrix inverse(Matrix A){
+    // We'll need a bigger Matrix to work on and have (A|Id)
+    Matrix tmp = newMatrix(A.nb_rows, A.nb_columns * 2);
+    // Creation of the identity Matrix
+    Matrix Id = newMatrix(A.nb_rows, A.nb_columns);
+    int i, j;
+    for(i = 1; i <= Id.nb_rows; i++){
+        for(j = 1; j <= Id.nb_rows; j++){
+            if(i == j)
+                setElt(Id, i, j, 1);
+            else
+                setElt(Id, i, j, 0);
+        }
+    }
+    Matrix tmp1 = setMatrixBlock(tmp, 1, 1, A);
+    deleteMatrix(tmp);
+    Matrix tmp2 = setMatrixBlock(tmp1, 1, A.nb_columns + 1, Id);
+    deleteMatrix(tmp1);
+    deleteMatrix(Id);
+    Matrix tmp3 = pivotDeGauss(tmp2, 0);
+    deleteMatrix(tmp2);
+    Matrix inverted = getMatrixBlock(tmp3, 1, A.nb_columns + 1, A.nb_rows, A.nb_columns);
+    deleteMatrix(tmp3);
+    return inverted;
 }

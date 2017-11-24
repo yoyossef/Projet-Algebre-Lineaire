@@ -295,6 +295,7 @@ Matrix getMatrixBlock(Matrix A, int row, int column, int nb_rows, int nb_columns
 }
 
 int main(){
+    printf("The set of tests is in execution... \n\n\tExercice 1.1\n");
     Matrix A = newMatrix(3, 3);
     printf("Matrix A: \n");
     setElt(A, 1, 1, 1); setElt(A, 1, 2, 3); setElt(A, 1, 3, 5);
@@ -307,7 +308,9 @@ int main(){
     setElt(B, 1, 1, 1); setElt(B, 1, 2, 4); setElt(B, 1, 3, 2);
     setElt(B, 2, 1, 2); setElt(B, 2, 2, 5); setElt(B, 2, 3, 1);
     printMatrix(B);
-   
+    
+    printf("\n\tExercice 1.2 \n");
+
     if(isSquare(A))
         printf("A is square\n");
     else
@@ -328,6 +331,8 @@ int main(){
     else
         printf("B isn't symetric\n");
 
+    printf("\n\tExercice 1.3\n");
+
     printf("Transpose of A : \n");
     Matrix tA = transpose(A);
     printMatrix(tA);
@@ -335,6 +340,8 @@ int main(){
     printf("Transpose of B : \n");
     Matrix tB = transpose(B);
     printMatrix(tB);
+
+    printf("\n\tExercice 1.4\n");
 
     printf("Addition A + B : \n");
     Matrix add_a_b = addition(A, B);
@@ -372,26 +379,34 @@ int main(){
     Matrix multsc_b = mult_scalar(3.0, B);
     printMatrix(multsc_b);
 
+    printf("\n\tExercice 1.5\n");
+
     if(isSymetric(add_ta_a))
         printf("tA + A is symetric\n");
     else
         printf("tA + A isn't symetric\n");
 
+    printf("\n\tExercice 1.6\n");
+    printf("Reminder, the indexes start at 1 in my implementation.\n");
     printf("Matrix C = setMatrixBlock(A, 2, 1, B)\n");
     Matrix C = setMatrixBlock(A, 2, 1, B);
     printMatrix(C);
 
-    printf("Matrix D = getMatrixBlock(A, 1, 1, 2, 2)\n");
-    Matrix D = getMatrixBlock(A, 1, 1, 2, 2);
+    printf("\n\tExercice 1.7\n");
+
+    printf("Matrix D = getMatrixBlock(A, 2, 2, 2, 2)\n");
+    Matrix D = getMatrixBlock(A, 2, 2, 2, 2);
     printMatrix(D);
 
+    printf("\tExercice 1.8\n");
+
     E det_a = determinant(A);
-    if(det_a != DBL_MAX)
-        printf("Determinant of A: %f\n", det_a);
+    printf("Determinant of A: %f\n", det_a);
 
     E det_b = determinant(B);
-    if(det_b != DBL_MAX)
-        printf("Determinant of B: %f\n", det_b);
+    printf("Determinant of B: %f\n", det_b);
+
+    // Déterminant avec Gauss
 
     printf("Determinant of A with gauss: \n");
     Matrix gauss = pivotDeGauss(A, true);
@@ -399,18 +414,40 @@ int main(){
     printMatrix(gauss);
     printf("Determinant of A (with gauss) : %f\n", detgauss);
 
+    printf("\n\tExercice 1.9\n");
+
+
+    printf("\n\tExercice 1.10\n");
+
+    E det_add_ta_a = determinant(add_ta_a);
+    printf("Determinant of B: %f\n", det_add_ta_a);
+
+    // Résolution
+    printf("\n\tExercice 1.11\n");
+
     printf("Resolution of Ax = b:\n");
-	Matrix be=newMatrix(3,1);
-	setElt(be,1,1,0);
-	setElt(be,2,1,-7);
-	setElt(be,3,1,4);
+	Matrix b=newMatrix(3,1);
+	setElt(b,1,1,0);
+	setElt(b,2,1,-7);
+	setElt(b,3,1,4);
     printf("Matrix b : \n");
-    printMatrix(be);
-    Matrix res = resolution(A, be);
+    printMatrix(b);
+    Matrix res = resolution(A, b);
     printf("Matrix x : \n");
     printMatrix(res);
 
-    deleteMatrix(be);
+    // Calcul de l'inverse
+    printf("\n\tExercice 1.12\n");
+
+    Matrix inverse_A = inverse(A);
+    printf("L'inverse de A :\n");
+    printMatrix(inverse_A);
+
+    // Decomposition LU
+    printf("\n\t Exercice 1.13\n");
+
+    deleteMatrix(inverse_A);
+    deleteMatrix(b);
     deleteMatrix(res);
     deleteMatrix(gauss);
     deleteMatrix(A);

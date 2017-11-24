@@ -30,4 +30,6 @@ E determinant2(Matrix m);
 
 Matrix resolution(Matrix A, Matrix x);
 
+Matrix inverse(Matrix A);
+
 #endif
