@@ -6,10 +6,10 @@ Ce projet consiste a réaliser des fonctions qui permettent de manipuler des mat
 
 To compile the code (to execute in the same folder than the source code), type in the terminal:
 
-make
+> make
 
 ### Exécution
 
 To execute the code (once compiled), type in the terminal:
 
-./main
+> ./main
